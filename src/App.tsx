@@ -9,7 +9,7 @@ function App() {
   return (
     <>
         <Video
-            src={"https://zenstat.ru/vd/60e1ba7685b74724b4d015be/720x1280/60e1ba7685b74724b4d015be.mp4"}
+            src={"https://download.samplelib.com/mp4/sample-30s.mp4"}
             controls={true}
             height={500}
             width={800}

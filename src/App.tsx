@@ -7,14 +7,23 @@ import './App.css'
 import {useEffect, useState} from 'react';
 import WebApp from '@twa-dev/sdk';
 
+// import { WebApp } from '@twa-dev/sdk';
+
+interface User {
+    id: number;
+    first_name: string;
+    last_name: string;
+    username: string;
+}
+
 function App() {
 
-    const [user, setUser] = useState<WebApp.WebAppUser | null>(null);
+    const [user, setUser] = useState<User | null>(null);
 
     useEffect(() => {
-        const userInfo = WebApp.initDataUnsafe.user;
+        const userInfo = WebApp.initDataUnsafe?.user;
         if (userInfo) {
-            setUser(userInfo);
+            setUser(userInfo as User);
         }
     }, []);
 

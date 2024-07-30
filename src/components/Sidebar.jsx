@@ -1,6 +1,4 @@
-import React from "react";
 import { Stack } from "@mui/material";
-
 import { categories } from "../utils/constants";
 
 const Categories = ({ selectedCategory, setSelectedCategory }) => (
@@ -16,6 +14,8 @@ const Categories = ({ selectedCategory, setSelectedCategory }) => (
       <button
         className="category-btn"
         onClick={() => setSelectedCategory(category.name)}
+        // если категория выбрана, то она красного цвета
+          // кнопки белого цвета
         style={{
           background: category.name === selectedCategory && "#FC1503",
           color: "white",
@@ -26,7 +26,7 @@ const Categories = ({ selectedCategory, setSelectedCategory }) => (
           {category.icon}
         </span>
         <span style={{ opacity: category.name === selectedCategory ? "1" : "0.8" }}>
-          {category.name}
+          {category.viewname}
         </span>
       </button>
     ))}

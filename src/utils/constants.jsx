@@ -9,15 +9,15 @@ import OndemandVideoIcon from '@mui/icons-material/OndemandVideo';
 // import CheckroomIcon from '@mui/icons-material/Checkroom';
 // import GraphicEqIcon from '@mui/icons-material/GraphicEq';
 // import TheaterComedyIcon from '@mui/icons-material/TheaterComedy';
-import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
+// import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 // import DeveloperModeIcon from '@mui/icons-material/DeveloperMode';
 
 export const logo = 'https://i.ibb.co/s9Qys2j/logo.png';
 
 export const categories = [
-  { name: 'Новые видео', icon: <HomeIcon />, },
-  { name: 'В тренде', icon: <OndemandVideoIcon />, },
-  { name: 'Рейтинг каналов', icon: <FitnessCenterIcon />, },
+  { viewname: 'Последнее', name: 'New', icon: <HomeIcon />, },
+  { viewname: 'В тренде', name: 'Trend', icon: <OndemandVideoIcon />, },
+  // { type: 'home', name: 'Рейтинг каналов', icon: <FitnessCenterIcon />, },
   // { name: 'Coding', icon: <CodeIcon />, },
   // { name: 'ReactJS', icon: <CodeIcon />, },
   // { name: 'NextJS', icon: <CodeIcon />, },

@@ -1,7 +1,23 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import { Box } from '@mui/material';
 
 import { ChannelDetail, VideoDetail, SearchFeed, Navbar, Feed } from './components';
+import {useEffect} from "react";
+
+const RedirectHandler = () => {
+    const location = useLocation();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const currentPath = location.pathname;
+        // Перенаправляем на '/' если путь не совпадает с другими маршрутами
+        if (currentPath !== '/' && currentPath !== '/video/:id' && currentPath !== '/channel/:id' && currentPath !== '/search/:searchTerm') {
+            navigate('/');
+        }
+    }, [location, navigate]);
+
+    return null;
+};
 
 const App = () => (
     <BrowserRouter>
@@ -13,6 +29,7 @@ const App = () => (
                 <Route path='/channel/:id' element={<ChannelDetail />} />
                 <Route path='/search/:searchTerm' element={<SearchFeed />} />
             </Routes>
+            <RedirectHandler />
         </Box>
     </BrowserRouter>
 );

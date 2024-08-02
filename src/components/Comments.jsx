@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Box, Typography, TextField, Button, List, ListItem, ListItemText } from '@mui/material';
 import { fetchFromAPI } from '../utils/fetchFromAPI'; // для получения комментариев
+import WebApp from '@twa-dev/sdk';
+
 
 const Comments = ({ videoId }) => {
     const [comments, setComments] = useState([]);
@@ -8,7 +10,20 @@ const Comments = ({ videoId }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    const [user, setUser] = useState(null);
+//
+//     useEffect(() => {
+//         const userInfo = WebApp.initDataUnsafe?.user;
+//         if (userInfo) {
+//             setUser(userInfo);
+//         }
+//     }, []);
+
     useEffect(() => {
+        const userInfo = WebApp.initDataUnsafe?.user;
+        if (userInfo) {
+            setUser(userInfo);
+        }
         setLoading(true);
         setError(null);
         // fetchFromAPI(`commentThreads?part=snippet&videoId=${videoId}`)
@@ -66,7 +81,16 @@ const Comments = ({ videoId }) => {
     const handleCommentSubmit = () => {
         // Логика для отправки комментария на сервер должна быть здесь
         // Пока просто добавляем комментарий в локальное состояние
-        setComments([...comments, { snippet: { topLevelComment: { snippet: { textDisplay: comment } } } }]);
+        setComments([...comments, {
+            snippet: {
+                topLevelComment: {
+                    snippet: {
+                        authorDisplayName: user?.first_name, // Добавляем имя автора
+                        textDisplay: comment,
+                    },
+                },
+            },
+        }]);
         setComment('');
     };
 

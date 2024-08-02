@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import ReactPlayer from "react-player";
 import { Typography, Box, Stack } from "@mui/material";
@@ -6,6 +6,7 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 import { Videos, Loader } from "./";
 import { fetchFromAPI } from "../utils/fetchFromAPI";
+import Comments from "./Comments"; // Импортируем Comments
 
 const VideoDetail = () => {
   const [videoDetail, setVideoDetail] = useState(null);
@@ -51,8 +52,11 @@ const VideoDetail = () => {
             </Stack>
           </Box>
         </Box>
+        {/*<Box px={2} py={{ md: 1, xs: 5 }} justifyContent="center" alignItems="center" >*/}
+        {/*  <Videos videos={videos} direction="column" />*/}
+        {/*</Box>*/}
         <Box px={2} py={{ md: 1, xs: 5 }} justifyContent="center" alignItems="center" >
-          <Videos videos={videos} direction="column" />
+          <Comments videoId={id} /> {/* Используем компоненту Comments */}
         </Box>
       </Stack>
     </Box>

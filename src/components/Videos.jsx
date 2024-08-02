@@ -2,6 +2,7 @@ import { Stack, Box } from "@mui/material";
 
 import { ChannelCard, Loader, VideoCard } from "./";
 
+// direction - как показывать видео в строку или в колонку, "row" по умолчанию
 const Videos = ({ videos, direction }) => {
   if(!videos?.length) return <Loader />;
   
@@ -10,7 +11,8 @@ const Videos = ({ videos, direction }) => {
       {videos.map((item, idx) => (
         <Box key={idx}>
           {item.id.videoId && <VideoCard video={item} /> }
-          {item.id.channelId && <ChannelCard channelDetail={item} />}
+          {/*{item.id.channelId && <ChannelCard channelDetail={item} />}*/}
+          {/* не нужно отображать каналы в подборках, только видео карты*/}
         </Box>
       ))}
     </Stack>

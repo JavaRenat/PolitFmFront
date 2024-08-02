@@ -30,11 +30,12 @@ const VideoDetail = () => {
       <Stack direction={{ xs: "column", md: "row" }}>
         <Box flex={1}>
           <Box sx={{width: "100%", position: "sticky", top: "86px"}}>
-            {/*<ReactPlayer*/}
-            {/*    url={`https://s3.pl-waw.scw.cloud/polit.fm/polit_fm_data_v1/videoplayback.mp4`}*/}
-            {/*    className="react-player"*/}
-            {/*    controls*/}
-            {/*/>*/}
+            <ReactPlayer
+                url={`https://s3.pl-waw.scw.cloud/polit.fm/polit_fm_data_v1/videoplayback.mp4`}
+                className="react-player"
+                controls
+                playsinline
+            />
             {/*<ReactPlayer*/}
             {/*    url={`https://s3.pl-waw.scw.cloud/polit.fm/polit_fm_data_v1/videoplayback.mp4`}*/}
             {/*    className="react-player"*/}
@@ -42,13 +43,13 @@ const VideoDetail = () => {
             {/*    width="100%"*/}
             {/*    style={{aspectRatio: "16/9"}}*/}
             {/*/>*/}
-            <iframe
-                src={`https://s3.pl-waw.scw.cloud/polit.fm/polit_fm_data_v1/videoplayback.mp4`}
-                style={{position: "absolute", top: 0, left: 0, width: "100%", height: "100%"}}
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-            />
+            {/*<iframe*/}
+            {/*    src={`https://s3.pl-waw.scw.cloud/polit.fm/polit_fm_data_v1/videoplayback.mp4`}*/}
+            {/*    style={{position: "absolute", top: 0, left: 0, width: "100%", height: "100%"}}*/}
+            {/*    frameBorder="0"*/}
+            {/*    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"*/}
+            {/*    allowFullScreen*/}
+            {/*/>*/}
             <Typography color="#fff" variant="h5" fontWeight="bold" p={2}>
               {title}
             </Typography>

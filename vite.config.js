@@ -8,15 +8,5 @@ export default defineConfig({
   build: {
     outDir: './docs'
   },
-  base: './',
-  server: {
-    proxy: {
-      '/backend': {
-        target: 'http://94.156.35.132:8080',
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/backend/, ''),
-        secure: false
-      }
-    }
-  }
+  base: './'
 })

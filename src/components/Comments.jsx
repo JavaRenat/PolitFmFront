@@ -226,7 +226,7 @@ const Comments = ({videoId}) => {
     }
 
     return (
-        <Box sx={{backgroundColor: '#fff', borderRadius: '8px', p: 2, mt: 2}}>
+        <Box sx={{backgroundColor: '#fff', borderRadius: '8px', p: 2, mt: 2, maxWidth: '600px'}}>
             <Box display="flex" flexDirection="column" mb={2}>
                 <TextField
                     variant="outlined"
@@ -294,7 +294,10 @@ const Comments = ({videoId}) => {
                                                     color: '#000',
                                                     fontSize: '1rem',
                                                     overflowWrap: 'break-word', // Обеспечивает перенос длинных слов
+                                                    whiteSpace: 'pre-wrap', // Обеспечивает сохранение пробелов и переносов строк
+                                                    wordBreak: 'break-word', // Разрывает длинные слова для предотвращения переполнения
                                                     width: '100%', // Занимает всю ширину контейнера
+                                                    display: 'inline-block' // Устанавливает display: inline-block для правильного обтекания текста
                                                 }}
                                             >
                                                 {comment.snippet.topLevelComment.snippet.textDisplay}
@@ -405,7 +408,10 @@ const Comments = ({videoId}) => {
                                                                 color: '#000',
                                                                 fontSize: '1rem',
                                                                 overflowWrap: 'break-word', // Обеспечивает перенос длинных слов
+                                                                whiteSpace: 'pre-wrap', // Обеспечивает сохранение пробелов и переносов строк
+                                                                wordBreak: 'break-word', // Разрывает длинные слова для предотвращения переполнения
                                                                 width: '100%', // Занимает всю ширину контейнера
+                                                                display: 'inline-block' // Устанавливает display: inline-block для правильного обтекания текста
                                                             }}
                                                         >
                                                             {reply.snippet.textDisplay}

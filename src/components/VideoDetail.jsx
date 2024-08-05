@@ -29,7 +29,7 @@ const VideoDetail = () => {
 
     if (!videoDetail?.snippet) return <Typography variant="h5" color="error">Не найдено.</Typography>; // Если данных нет, отображаем сообщение//<Loader/>;
 
-    const {snippet: {title, channelId, channelTitle}, statistics: {viewCount, likeCount}} = videoDetail;
+    const {snippet: {title, channelId, channelTitle, videoUrl}, statistics: {viewCount, likes, dislikes}} = videoDetail;
 
     return (
         <Box minHeight="95vh">
@@ -37,7 +37,7 @@ const VideoDetail = () => {
                 <Box flex={1}>
                     <Box sx={{width: "100%", position: "sticky", top: "86px"}}>
                         <ReactPlayer
-                            url={`https://s3.pl-waw.scw.cloud/polit.fm/polit_fm_data_v1/videoplayback.mp4`}
+                            url={videoUrl}
                             className="react-player"
                             controls
                             playsinline
@@ -80,7 +80,7 @@ const VideoDetail = () => {
                                 <ThumbUpIcon sx={{ fontSize: "16px" }} />
                               </IconButton>
                               <Typography variant="body1" sx={{ opacity: 0.7, mr: 2 }}>
-                                {parseInt(likeCount).toLocaleString()}
+                                {parseInt(likes).toLocaleString()}
                               </Typography>
                               <IconButton
                                   sx={{
@@ -99,7 +99,7 @@ const VideoDetail = () => {
                                 <ThumbDownIcon sx={{ fontSize: "16px" }} />
                               </IconButton>
                               <Typography variant="body1" sx={{ opacity: 0.7 }}>
-                                {parseInt(likeCount).toLocaleString()}
+                                {parseInt(dislikes).toLocaleString()}
                               </Typography>
                             </Box>
                           </Stack>

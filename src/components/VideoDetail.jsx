@@ -16,18 +16,18 @@ import ShareIcon from '@mui/icons-material/Share';
 
 const VideoDetail = () => {
     const [videoDetail, setVideoDetail] = useState(null);
-    const [videos, setVideos] = useState(null);
+    // const [videos, setVideos] = useState(null);
     const {id} = useParams();
 
     useEffect(() => {
         fetchFromAPI(`video?part=snippet,statistics&id=${id}`)
             .then((data) => setVideoDetail(data.items[0]))
 
-        fetchFromAPI(`video?part=snippet&relatedToVideoId=${id}&type=video`)
-            .then((data) => setVideos(data.items))
+        // fetchFromAPI(`video?part=snippet&relatedToVideoId=${id}&type=video`)
+        //     .then((data) => setVideos(data.items))
     }, [id]);
 
-    if (!videoDetail?.snippet) return <Loader/>;
+    if (!videoDetail?.snippet) return <Typography variant="h5" color="error">Не найдено.</Typography>; // Если данных нет, отображаем сообщение//<Loader/>;
 
     const {snippet: {title, channelId, channelTitle}, statistics: {viewCount, likeCount}} = videoDetail;
 

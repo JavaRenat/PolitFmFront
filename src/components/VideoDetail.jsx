@@ -20,7 +20,7 @@ const VideoDetail = () => {
     const {id} = useParams();
 
     useEffect(() => {
-        fetchFromAPI(`video?part=snippet,statistics&id=${id}`)
+        fetchFromAPI(`video?id=${id}`)
             .then((data) => setVideoDetail(data.items[0]))
 
         // fetchFromAPI(`video?part=snippet&relatedToVideoId=${id}&type=video`)
@@ -48,7 +48,7 @@ const VideoDetail = () => {
                         <Stack direction="row" justifyContent="space-between" sx={{color: "#fff"}} py={1} px={2}>
                             <Link to={`/channel/${channelId}`}>
                                 <Typography variant={{sm: "subtitle1", md: 'h6'}} color="#fff">
-                                    {channelTitle}
+                                    Канал
                                     <CheckCircleIcon sx={{fontSize: "12px", color: "gray", ml: "5px"}}/>
                                 </Typography>
                             </Link>
@@ -80,7 +80,7 @@ const VideoDetail = () => {
                                 <ThumbUpIcon sx={{ fontSize: "16px" }} />
                               </IconButton>
                               <Typography variant="body1" sx={{ opacity: 0.7, mr: 2 }}>
-                                {parseInt(likes).toLocaleString()}
+                                {likes.toLocaleString()}
                               </Typography>
                               <IconButton
                                   sx={{
@@ -99,7 +99,7 @@ const VideoDetail = () => {
                                 <ThumbDownIcon sx={{ fontSize: "16px" }} />
                               </IconButton>
                               <Typography variant="body1" sx={{ opacity: 0.7 }}>
-                                {parseInt(dislikes).toLocaleString()}
+                                {dislikes.toLocaleString()}
                               </Typography>
                             </Box>
                           </Stack>
@@ -109,7 +109,7 @@ const VideoDetail = () => {
                         <Box sx={{display: 'flex', alignItems: 'center'}}>
                           <VisibilityIcon sx={{fontSize: "16px", color: "gray", mr: 1}}/>
                           <Typography variant="body1" sx={{opacity: 0.7, color: '#fff'}}>
-                            {parseInt(viewCount).toLocaleString()}
+                            {viewCount.toLocaleString()}
                           </Typography>
                         </Box>
                         <Button variant="contained"

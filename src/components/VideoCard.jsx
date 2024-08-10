@@ -12,7 +12,11 @@ const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString(undefined, options);
 };
 
-const VideoCard = ({ video: { id: { videoId }, snippet } }) => (
+/*
+ Эта компонента показывается в поиске, тренде и последних
+ */
+
+const VideoCard = ({ video: { id: { videoId }, snippet, statistics } }) => (
   <Card sx={{ width: { xs: '100%', sm: '358px', md: "320px", }, boxShadow: "none", borderRadius: 0 }}>
     <Link to={videoId ? `/video/${videoId}` : `/video/cV2gBU6hKfY` }>
       <CardMedia image={snippet?.thumbnails?.high?.url || demoThumbnailUrl} alt={snippet?.title} 
@@ -22,12 +26,12 @@ const VideoCard = ({ video: { id: { videoId }, snippet } }) => (
     <CardContent sx={{ backgroundColor: "#1E1E1E", height: '106px' }}>
       <Link to={videoId ? `/video/${videoId}` : demoVideoUrl } >
         <Typography variant="subtitle1" fontWeight="bold" color="#FFF">
-          {snippet?.title.slice(0, 60) || demoVideoTitle.slice(0, 60)}
+          {snippet?.title.slice(0, 50) || demoVideoTitle.slice(0, 50)}
         </Typography>
       </Link>
       <Link to={snippet?.channelId ? `/channel/${snippet?.channelId}` : demoChannelUrl} >
         <Typography variant="subtitle2" color="gray">
-          {snippet?.channelTitle || demoChannelTitle}
+          Канал
           <CheckCircleIcon sx={{ fontSize: "12px", color: "gray", ml: "5px" }} />
         </Typography>
       </Link>
@@ -35,15 +39,15 @@ const VideoCard = ({ video: { id: { videoId }, snippet } }) => (
         <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
             <VisibilityIcon sx={{ fontSize: "16px", color: "gray", mr: 1 }} />
             <Typography variant="body2" color="gray" sx={{ mr: 2 }}>
-                {snippet?.viewCount !== undefined ? `${snippet.viewCount} просмотров` : '0'}
+                {statistics?.viewCount !== undefined ? `${statistics.viewCount}` : '0'}
             </Typography>
             <ThumbUpIcon sx={{ fontSize: "16px", color: "gray", mr: 1 }} />
             <Typography variant="body2" color="gray" sx={{ mr: 2 }}>
-                {snippet?.likes !== undefined ? snippet.likes : '0'}
+                {statistics?.likes !== undefined ? statistics.likes : '0'}
             </Typography>
             <ThumbDownIcon sx={{ fontSize: "16px", color: "gray", mr: 1 }} />
             <Typography variant="body2" color="gray">
-                {snippet?.dislikes !== undefined ? snippet.dislikes : '0'}
+                {statistics?.dislikes !== undefined ? statistics.dislikes : '0'}
             </Typography>
             <Typography variant="body2" color="gray" sx={{ ml: 2 }}>
                   {formatDate(snippet?.publishedAt)}

@@ -16,7 +16,7 @@ const Feed = () => {
         setLoading(true);
         setError(null);
 
-        fetchFromAPI(`video?part=snippet&type=${selectedCategory}`)
+        fetchFromAPI(`video?type=${selectedCategory}`)
             .then((data) => {
                 if (data.items.length === 0) {
                     setError("Видео не найдено");

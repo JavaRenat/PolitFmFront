@@ -15,8 +15,8 @@ import OndemandVideoIcon from '@mui/icons-material/OndemandVideo';
 export const logo = 'https://i.ibb.co/s9Qys2j/logo.png';
 
 export const categories = [
-  { viewname: 'Последнее', name: 'New', icon: <HomeIcon />, },
   { viewname: 'Лучшее', name: 'Trend', icon: <OndemandVideoIcon />, },
+  { viewname: 'Последнее', name: 'New', icon: <HomeIcon />, },
   // { type: 'home', name: 'Рейтинг каналов', icon: <FitnessCenterIcon />, },
   // { name: 'Coding', icon: <CodeIcon />, },
   // { name: 'ReactJS', icon: <CodeIcon />, },

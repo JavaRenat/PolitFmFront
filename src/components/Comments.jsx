@@ -25,11 +25,12 @@ const CommentAvatar = ({name}) => {
     );
 };
 
-const postComment = async (videoId, commentText, author) => {
+const postComment = async (videoId, commentText, authorId, authorTelegramName) => {
     try {
         const commentData = {
             text: commentText,
-            author: author !== undefined && author !== null ? author : 6666666,
+            author: authorId !== undefined && authorId !== null ? authorId : 666,
+            authorDisplayName: authorTelegramName !== undefined && authorTelegramName !== null ? authorTelegramName : 'Земфира'
         };
 
         const response = await fetchFromAPIGeneral(`videos/${videoId}/comment`, 'POST', JSON.stringify(commentData));
@@ -99,7 +100,7 @@ const Comments = ({videoId}) => {
         }, ...comments]);
 
         try {
-            await postComment(videoId, comment, user?.id);
+            await postComment(videoId, comment, user?.id, user?.first_name);
         } catch (error) {
             console.error('Не удалось отправить комментарий:', error.message);
         }

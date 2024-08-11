@@ -13,6 +13,7 @@ import {
 } from '@mui/material';
 import {ThumbUp, ThumbDown, ExpandMore, ExpandLess} from '@mui/icons-material';
 import WebApp from '@twa-dev/sdk';
+import {fetchFromAPI, fetchFromAPIGeneral} from "../utils/fetchFromAPI.jsx";
 
 // Компонент для отображения одной иконки с первой буквой имени
 const CommentAvatar = ({name}) => {
@@ -22,6 +23,25 @@ const CommentAvatar = ({name}) => {
             {initials}
         </Avatar>
     );
+};
+
+const postComment = async (videoId, commentText, author) => {
+    try {
+        const commentData = {
+            text: commentText,
+            author: author !== undefined && author !== null ? author : 6666666,
+        };
+
+        const response = await fetchFromAPIGeneral(`videos/${videoId}/comment`, 'POST', JSON.stringify(commentData));
+
+        if (!response.ok) {
+            throw new Error('Ошибка отправки комментария');
+        }
+
+        return await response.json();
+    } catch (error) {
+        throw new Error(error.message);
+    }
 };
 
 const Comments = ({videoId}) => {
@@ -41,111 +61,24 @@ const Comments = ({videoId}) => {
         }
         setLoading(true);
         setError(null);
-        // fetchFromAPI(commentThreads?part=snippet&videoId=${videoId})
-        //     .then((data) => {
-        //         if (data.items) {
-        //             setComments(data.items);
-        //         } else {
-        //             setComments([]);
-        //         }
-        //         setLoading(false);
-        //     })
-        //     .catch((error) => {
-        //         setError(error.message);
-        //         setLoading(false);
-        //     });
-        // Имитация загрузки комментариев
-        setTimeout(() => {
-            setComments([
-                {
-                    id: '1',
-                    snippet: {
-                        topLevelComment: {
-                            snippet: {
-                                authorDisplayName: 'Иван Иванов',
-                                textDisplay: 'Отличное видео! Спасибо за контент.',
-                                likeCount: 10,
-                                dislikeCount: 2,
-                                replyCount: 3
-                            },
-                        },
-                        replies: [
-                            {
-                                id: '1-1',
-                                snippet: {
-                                    authorDisplayName: 'Алексей Смирнов',
-                                    textDisplay: 'Спасибо, Иван!',
-                                    likeCount: 2,
-                                    dislikeCount: 0
-                                }
-                            },
-                            {
-                                id: '1-2',
-                                snippet: {
-                                    authorDisplayName: 'Алексей Смирнов',
-                                    textDisplay: 'Спасибо, Иван! Иван',
-                                    likeCount: 2,
-                                    dislikeCount: 0
-                                }
-                            },
-                            {
-                                id: '1-3',
-                                snippet: {
-                                    authorDisplayName: 'Алексей Смирнов',
-                                    textDisplay: 'Спасибо, Иван! Иваныч',
-                                    likeCount: 2,
-                                    dislikeCount: 0
-                                }
-                            }
-                        ]
-                    }
-                },
-                {
-                    id: '2',
-                    snippet: {
-                        topLevelComment: {
-                            snippet: {
-                                authorDisplayName: 'Алексей Смирнов',
-                                textDisplay: 'Очень полезная информация. Подписываюсь!',
-                                likeCount: 5,
-                                dislikeCount: 1,
-                                replyCount: 0
-                            },
-                        },
-                        replies: []
-                    }
-                },
-                {
-                    id: '3',
-                    snippet: {
-                        topLevelComment: {
-                            snippet: {
-                                authorDisplayName: 'Мария Петрова',
-                                textDisplay: 'Согласна, видео очень интересное. Жду продолжения.',
-                                likeCount: 8,
-                                dislikeCount: 1,
-                                replyCount: 1
-                            },
-                        },
-                        replies: [
-                            {
-                                id: '3-1',
-                                snippet: {
-                                    authorDisplayName: 'Иван Иванов',
-                                    textDisplay: 'Рад, что вам понравилось!',
-                                    likeCount: 1,
-                                    dislikeCount: 0
-                                }
-                            }
-                        ]
-                    }
+        fetchFromAPI(`videos/${videoId}/commentThreads`)
+            .then((data) => {
+                if (data.items) {
+                    setComments(data.items);
+                } else {
+                    setComments([]);
                 }
-            ]);
-            setLoading(false);
-        }, 1000); // Имитация задержки загрузки
+                setLoading(false);
+            })
+            .catch((error) => {
+                setError(error.message);
+                setLoading(false);
+            });
     }, [videoId]);
 
-    const handleCommentSubmit = () => {
+
+
+    const handleCommentSubmit = async () => {
         if (comment.trim() === '') {
             return; // Не выполняем дальнейшие действия, если комментарий пустой
         }
@@ -164,6 +97,12 @@ const Comments = ({videoId}) => {
                 replies: []
             },
         }, ...comments]);
+
+        try {
+            await postComment(videoId, comment, user?.id);
+        } catch (error) {
+            console.error('Не удалось отправить комментарий:', error.message);
+        }
         setComment('');
         setReplyTo(null); // Сброс ID ответа
     };

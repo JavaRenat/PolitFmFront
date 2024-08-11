@@ -17,3 +17,18 @@ export const fetchFromAPI = async (url) => {
 
   return data;
 };
+
+
+export const fetchFromAPIGeneral = async (url, method = 'GET', bodyData = null) => {
+  try {
+    if (method === 'POST' && bodyData) {
+      const { data } = await axios.post(`${BASE_URL}/${url}`, bodyData);
+      return data
+    }
+
+    return fetchFromAPI(url);
+  } catch (error) {
+    console.error('API call failed:', error);
+    throw error;
+  }
+};

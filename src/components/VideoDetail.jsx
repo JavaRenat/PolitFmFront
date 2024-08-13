@@ -1,25 +1,33 @@
 import {useEffect, useState} from "react";
 import {Link, useParams} from "react-router-dom";
 import ReactPlayer from "react-player";
-import {Typography, Box, Stack, Button, Collapse, IconButton} from "@mui/material";
+import {Box, Button, IconButton, Stack, Typography} from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
-import {Videos, Loader} from "./";
-import {fetchFromAPI} from "../utils/fetchFromAPI";
+import {fetchFromAPI, fetchFromAPIGeneral} from "../utils/fetchFromAPI";
 import Comments from "./Comments"; // Импортируем Comments
 import VisibilityIcon from "@mui/icons-material/Visibility.js";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp.js";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown.js";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ShareIcon from '@mui/icons-material/Share';
+import WebApp from "@twa-dev/sdk";
 
 const VideoDetail = () => {
     const [videoDetail, setVideoDetail] = useState(null);
     // const [videos, setVideos] = useState(null);
     const {id} = useParams();
+    const [user, setUser] = useState(null);
+    const [authorId, setAuthorId] = useState(null);
+    const [authorTelegramName, setAuthorTelegramName] = useState(null);
+
 
     useEffect(() => {
+        const userInfo = WebApp.initDataUnsafe?.user;
+        if (userInfo) {
+            setUser(userInfo);
+            setAuthorId(userInfo.id);
+            setAuthorTelegramName(userInfo.username || 'Виктор Цой');
+        }
         fetchFromAPI(`video?id=${id}`)
             .then((data) => setVideoDetail(data.items[0]))
     }, [id]);
@@ -27,6 +35,56 @@ const VideoDetail = () => {
     if (!videoDetail?.snippet) return <Typography variant="h5" color="error">...</Typography>; // Если данных нет, отображаем сообщение//<Loader/>;
 
     const {snippet: {title, channelId, videoUrl}, statistics: {viewCount, likes, dislikes}} = videoDetail;
+
+    const handleLike = async () => {
+        try {
+            const likeData = {
+                author: authorId !== undefined && authorId !== null ? authorId : 666,
+                authorDisplayName: authorTelegramName !== undefined && authorTelegramName !== null ? authorTelegramName : 'Земфира'
+            };
+
+            const response = await fetchFromAPIGeneral(`videos/${id}/like`, 'POST', JSON.stringify(likeData));
+
+            if (response.ok) {
+                setVideoDetail(prevDetail => ({
+                    ...prevDetail,
+                    statistics: {
+                        ...prevDetail.statistics,
+                        likes: prevDetail.statistics.likes + 1
+                    }
+                }));
+            } else {
+                console.error('Ошибка отправки лайка');
+            }
+
+        } catch (error) {
+            console.error('Error liking the video:', error);
+        }
+    };
+
+    const handleDislike = async () => {
+        const dislikeData = {
+            author: authorId !== undefined && authorId !== null ? authorId : 666,
+            authorDisplayName: authorTelegramName !== undefined && authorTelegramName !== null ? authorTelegramName : 'Земфира'
+        };
+        try {
+            const response = await fetchFromAPIGeneral(`videos/${id}/dislike`, 'POST', JSON.stringify(dislikeData));
+
+            if (response.ok) {
+                setVideoDetail(prevDetail => ({
+                    ...prevDetail,
+                    statistics: {
+                        ...prevDetail.statistics,
+                        dislikes: prevDetail.statistics.dislikes + 1
+                    }
+                }));
+            } else {
+                console.error('Ошибка отправки дизлайка');
+            }
+        } catch (error) {
+            console.error('Error disliking the video:', error);
+        }
+    };
 
     return (
         <Box minHeight="95vh">
@@ -73,11 +131,12 @@ const VideoDetail = () => {
                                       color: 'darkblue',
                                     },
                                   }}
+                                  onClick={handleLike}
                               >
                                 <ThumbUpIcon sx={{ fontSize: "16px" }} />
                               </IconButton>
                               <Typography variant="body1" sx={{ opacity: 0.7, mr: 2 }}>
-                                {likes.toLocaleString()}
+                                  {videoDetail?.statistics.likes?.toLocaleString()}
                               </Typography>
                               <IconButton
                                   sx={{
@@ -92,11 +151,12 @@ const VideoDetail = () => {
                                       color: 'darkred',
                                     },
                                   }}
+                                  onClick={handleDislike}
                               >
                                 <ThumbDownIcon sx={{ fontSize: "16px" }} />
                               </IconButton>
                               <Typography variant="body1" sx={{ opacity: 0.7 }}>
-                                {dislikes.toLocaleString()}
+                                  {videoDetail?.statistics.dislikes?.toLocaleString()}
                               </Typography>
                             </Box>
                           </Stack>

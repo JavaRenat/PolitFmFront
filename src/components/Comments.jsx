@@ -45,6 +45,27 @@ const postComment = async (videoId, commentText, authorId, authorTelegramName) =
     }
 };
 
+const postReplyComment = async (parentIdr, videoId, commentText, authorId, authorTelegramName) => {
+    try {
+        const commentData = {
+            parentId: parentIdr,
+            text: commentText,
+            author: authorId !== undefined && authorId !== null ? authorId : 666,
+            authorDisplayName: authorTelegramName !== undefined && authorTelegramName !== null ? authorTelegramName : 'Земфира'
+        };
+
+        const response = await fetchFromAPIGeneral(`videos/${videoId}/comment`, 'POST', JSON.stringify(commentData));
+
+        if (!response.ok) {
+            throw new Error('Ошибка отправки комментария');
+        }
+
+        return await response.json();
+    } catch (error) {
+        throw new Error(error.message);
+    }
+};
+
 const Comments = ({videoId}) => {
     const [comments, setComments] = useState([]);
     const [comment, setComment] = useState('');
@@ -54,11 +75,15 @@ const Comments = ({videoId}) => {
     const [user, setUser] = useState(null);
     const [expandedCommentId, setExpandedCommentId] = useState(null); // Для управления раскрытием комментариев
     const [replyTo, setReplyTo] = useState(null); // Хранит ID комментария, на который идет ответ
+    const [authorId, setAuthorId] = useState(null);
+    const [authorTelegramName, setAuthorTelegramName] = useState(null);
 
     useEffect(() => {
         const userInfo = WebApp.initDataUnsafe?.user;
         if (userInfo) {
             setUser(userInfo);
+            setAuthorId(userInfo.id);
+            setAuthorTelegramName(userInfo.username || 'Виктор Цой');
         }
         setLoading(true);
         setError(null);
@@ -78,6 +103,161 @@ const Comments = ({videoId}) => {
     }, [videoId]);
 
 
+    const handleLike = async (commentId) => {
+
+        const likeData = {
+            commentId: commentId,
+            author: authorId !== undefined && authorId !== null ? authorId : 666,
+            authorDisplayName: authorTelegramName !== undefined && authorTelegramName !== null ? authorTelegramName : 'Земфира'
+        };
+
+        const response = await fetchFromAPIGeneral(`comment/${commentId}/like`, 'POST', JSON.stringify(likeData));
+
+        if (response.ok) {
+            const updatedComments = comments.map((comment) => {
+                if (comment.id === commentId) {
+                    return {
+                        ...comment,
+                        snippet: {
+                            ...comment.snippet,
+                            topLevelComment: {
+                                ...comment.snippet.topLevelComment,
+                                snippet: {
+                                    ...comment.snippet.topLevelComment.snippet,
+                                    likeCount: comment.snippet.topLevelComment.snippet.likeCount + 1
+                                }
+                            }
+                        }
+                    };
+                }
+                return comment;
+            });
+
+            setComments(updatedComments);
+        } else {
+            console.error('Ошибка отправки лайка к коменту');
+        }
+    };
+
+    const handleReplyLike = async (commentId, replyId) => {
+
+        const likeData = {
+            commentId: replyId,
+            author: authorId !== undefined && authorId !== null ? authorId : 666,
+            authorDisplayName: authorTelegramName !== undefined && authorTelegramName !== null ? authorTelegramName : 'Земфира'
+        };
+
+        const response = await fetchFromAPIGeneral(`comment/${replyId}/like`, 'POST', JSON.stringify(likeData));
+
+        if (response.ok) {
+            const updatedComments = comments.map((comment) => {
+                if (comment.id === commentId) {
+                    return {
+                        ...comment,
+                        snippet: {
+                            ...comment.snippet,
+                            replies: comment.snippet.replies.map((reply) => {
+                                if (reply.id === replyId) {
+                                    return {
+                                        ...reply,
+                                        snippet: {
+                                            ...reply.snippet,
+                                            likeCount: reply.snippet.likeCount + 1
+                                        }
+                                    };
+                                }
+                                return reply;
+                            })
+                        }
+                    };
+                }
+                return comment;
+            });
+
+            setComments(updatedComments);
+        } else {
+            console.error('Ошибка отправки лайка к коменту');
+        }
+    };
+
+    const handleReplyDislike = async (commentId, replyId) => {
+
+        const likeData = {
+            commentId: replyId,
+            author: authorId !== undefined && authorId !== null ? authorId : 666,
+            authorDisplayName: authorTelegramName !== undefined && authorTelegramName !== null ? authorTelegramName : 'Земфира'
+        };
+
+        const response = await fetchFromAPIGeneral(`comment/${replyId}/dislike`, 'POST', JSON.stringify(likeData));
+
+        if (response.ok) {
+
+            const updatedComments = comments.map((comment) => {
+                if (comment.id === commentId) {
+                    return {
+                        ...comment,
+                        snippet: {
+                            ...comment.snippet,
+                            replies: comment.snippet.replies.map((reply) => {
+                                if (reply.id === replyId) {
+                                    return {
+                                        ...reply,
+                                        snippet: {
+                                            ...reply.snippet,
+                                            dislikeCount: reply.snippet.dislikeCount + 1
+                                        }
+                                    };
+                                }
+                                return reply;
+                            })
+                        }
+                    };
+                }
+                return comment;
+            });
+
+            setComments(updatedComments);
+        } else {
+            console.error('Ошибка отправки дизлайка к реплаю');
+        }
+    };
+
+
+    const handleDislike = async (commentId) => {
+        const likeData = {
+            commentId: commentId,
+            author: authorId !== undefined && authorId !== null ? authorId : 666,
+            authorDisplayName: authorTelegramName !== undefined && authorTelegramName !== null ? authorTelegramName : 'Земфира'
+        };
+
+        const response = await fetchFromAPIGeneral(`comment/${commentId}/dislike`, 'POST', JSON.stringify(likeData));
+
+        if (response.ok) {
+
+            const updatedComments = comments.map((comment) => {
+                if (comment.id === commentId) {
+                    return {
+                        ...comment,
+                        snippet: {
+                            ...comment.snippet,
+                            topLevelComment: {
+                                ...comment.snippet.topLevelComment,
+                                snippet: {
+                                    ...comment.snippet.topLevelComment.snippet,
+                                    dislikeCount: comment.snippet.topLevelComment.snippet.dislikeCount + 1
+                                }
+                            }
+                        }
+                    };
+                }
+                return comment;
+            });
+            setComments(updatedComments);
+        } else {
+            console.error('Ошибка отправки дизлайка к коменту');
+        }
+    };
+
 
     const handleCommentSubmit = async () => {
         if (comment.trim() === '') {
@@ -86,13 +266,13 @@ const Comments = ({videoId}) => {
         setComments([{
             id: (comments.length + 1).toString(), // Генерация уникального ID
             snippet: {
+                totalReplyCount: 0,
                 topLevelComment: {
                     snippet: {
                         authorDisplayName: user?.first_name, // Добавляем имя автора
                         textDisplay: comment,
                         likeCount: 0,
                         dislikeCount: 0,
-                        replyCount: 0
                     },
                 },
                 replies: []
@@ -108,30 +288,26 @@ const Comments = ({videoId}) => {
         setReplyTo(null); // Сброс ID ответа
     };
 
-    const handleReplayCommentSubmit = () => {
+    const handleReplayCommentSubmit = async () => {
         if (replayComment.trim() === '') {
             return; // Не выполняем дальнейшие действия, если комментарий пустой
         }
-
+        // сonsole.log("comment: ", replayComment);
+        const authorTelegramName = user?.first_name;
         const updatedComments = comments.map((comment) => {
             if (comment.id === replyTo) {
                 return {
                     ...comment,
                     snippet: {
                         ...comment.snippet,
-                        topLevelComment: {
-                            ...comment.snippet.topLevelComment,
-                            snippet: {
-                                ...comment.snippet.topLevelComment.snippet,
-                                replyCount: comment.snippet.topLevelComment.snippet.replyCount + 1
-                            }
-                        },
+                        ...comment.topLevelComment,
+                        totalReplyCount: comment.snippet.totalReplyCount + 1,
                         replies: [
                             ...comment.snippet.replies,
                             {
                                 id: `${comment.id}-${comment.snippet.replies.length + 1}`,
                                 snippet: {
-                                    authorDisplayName: user?.first_name, // Добавляем имя автора
+                                    authorDisplayName: authorTelegramName !== undefined && authorTelegramName !== null ? authorTelegramName : 'Земфира', // Добавляем имя автора
                                     textDisplay: replayComment,
                                     likeCount: 0,
                                     dislikeCount: 0
@@ -143,8 +319,12 @@ const Comments = ({videoId}) => {
             }
             return comment;
         });
-
         setComments(updatedComments);
+        try {
+            await postReplyComment(replyTo, videoId, replayComment, user?.id, user?.first_name);
+        } catch (error) {
+            console.error('Не удалось отправить комментарий:', error.message);
+        }
         setReplayComment('');
         setReplyTo(null); // Сброс ID ответа
     };
@@ -246,13 +426,13 @@ const Comments = ({videoId}) => {
                                     />
                                     <Box sx={{display: 'flex', flexDirection: 'column'}}>
                                         <Box sx={{display: 'flex', alignItems: 'center', mt: 1}}>
-                                            <IconButton size="small">
+                                            <IconButton size="small" onClick={() => handleLike(comment.id)}>
                                                 <ThumbUp/>
                                             </IconButton>
                                             <Typography variant="body2" sx={{mx: 0.5}}>
                                                 {comment.snippet.topLevelComment.snippet.likeCount}
                                             </Typography>
-                                            <IconButton size="small">
+                                            <IconButton size="small" onClick={() => handleDislike(comment.id)}>
                                                 <ThumbDown/>
                                             </IconButton>
                                             <Typography variant="body2" sx={{mx: 0.5}}>
@@ -266,13 +446,13 @@ const Comments = ({videoId}) => {
                                             >
                                                 Ответить
                                             </Button>
-                                            {comment.snippet.topLevelComment.snippet.replyCount > 0 && (
+                                            {comment.snippet.totalReplyCount > 0 && (
                                                 <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
                                                     <IconButton size="small" onClick={() => handleExpandClick(comment.id)}>
                                                         {expandedCommentId === comment.id ? <ExpandLess /> : <ExpandMore />}
                                                     </IconButton>
                                                     <Typography variant="body2" sx={{ ml: 1 }}>
-                                                        {comment.snippet.topLevelComment.snippet.replyCount}
+                                                        {comment.snippet.totalReplyCount}
                                                     </Typography>
                                                 </Box>
                                             )}
@@ -359,13 +539,13 @@ const Comments = ({videoId}) => {
                                                     }
                                                 />
                                                 <Box sx={{display: 'flex', alignItems: 'center'}}>
-                                                    <IconButton size="small">
+                                                    <IconButton size="small" onClick={() => handleReplyLike(comment.id, reply.id)}>
                                                         <ThumbUp/>
                                                     </IconButton>
                                                     <Typography variant="body2" sx={{mx: 0.5}}>
                                                         {reply.snippet.likeCount}
                                                     </Typography>
-                                                    <IconButton size="small">
+                                                    <IconButton size="small"  onClick={() => handleReplyDislike(comment.id, reply.id)}>
                                                         <ThumbDown/>
                                                     </IconButton>
                                                     <Typography variant="body2" sx={{mx: 0.5}}>

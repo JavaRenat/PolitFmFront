@@ -22,8 +22,12 @@ export const fetchFromAPI = async (url) => {
 export const fetchFromAPIGeneral = async (url, method = 'GET', bodyData = null) => {
   try {
     if (method === 'POST' && bodyData) {
-      const { data } = await axios.post(`${BASE_URL}/${url}`, bodyData);
-      return data
+      const response = await axios.post(`${BASE_URL}/${url}`, bodyData);
+      return {
+        ok: response.status >= 200 && response.status < 300,
+        status: response.status,
+        json: async () => response.data,
+      };
     }
 
     return fetchFromAPI(url);

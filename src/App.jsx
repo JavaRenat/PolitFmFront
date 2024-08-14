@@ -26,9 +26,19 @@ const FeedWithRedirect = () => {
     const location = useLocation();
 
     useEffect(() => {
+
+        const initData = window.Telegram?.WebApp?.initDataUnsafe;
+
         const queryParams = new URLSearchParams(location.search);
-        const videoId = queryParams.get('video');
-        const channelId = queryParams.get('channel');
+        let videoId = queryParams.get('video');
+        let channelId = queryParams.get('channel');
+
+
+        // Если параметры не найдены, проверяем данные из Telegram API
+        if (!videoId && !channelId && initData) {
+            videoId = initData.query_id === 'video' ? initData.query_hash : null;
+            channelId = initData.query_id === 'channel' ? initData.query_hash : null;
+        }
 
         if (videoId) {
             navigate(`/video/${videoId}`);

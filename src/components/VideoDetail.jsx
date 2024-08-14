@@ -86,6 +86,26 @@ const VideoDetail = () => {
         }
     };
 
+    const handleShareClick = async () => {
+        const videoUrlPolitFM = `${window.location.origin}?startapp=video${id}`; // Формируем ссылку на видео
+
+        try {
+            // // Попробуем использовать Web Share API, если он доступен
+            // if (navigator.share) {
+            //     await navigator.share({
+            //         title: 'Посмотрите это видео',
+            //         url: videoUrlPolitFM,
+            //     });
+            // } else {
+            // Если Web Share API недоступен, копируем ссылку в буфер обмена
+            await navigator.clipboard.writeText(videoUrlPolitFM);
+            alert('Ссылка скопирована в буфер обмена ' + videoUrlPolitFM);
+            // }
+        } catch (error) {
+            console.error('Ошибка при шаринге или копировании:', error);
+        }
+    };
+
     return (
         <Box minHeight="95vh">
             <Stack direction={{xs: "column", md: "row"}}>
@@ -98,7 +118,7 @@ const VideoDetail = () => {
                             playsinline
                         />
                         <Typography color="#fff" variant="h6" fontWeight="bold" p={2}>
-                          {title.slice(0, 35) + (title.length > 35 ? '...' : '')}
+                            {title.slice(0, 35) + (title.length > 35 ? '...' : '')}
                         </Typography>
                         <Stack direction="row" justifyContent="space-between" sx={{color: "#fff"}} py={1} px={2}>
                             <Link to={`/channel/${channelId}`}>
@@ -107,77 +127,78 @@ const VideoDetail = () => {
                                     <CheckCircleIcon sx={{fontSize: "12px", color: "gray", ml: "5px"}}/>
                                 </Typography>
                             </Link>
-                          <Stack direction="row" gap="20px" alignItems="center">
-                            <Box
-                                sx={{
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  border: '1px solid gray',
-                                  borderRadius: '50px',
-                                  padding: '5px 10px',
-                                  ml: "50px"
-                                }}
-                            >
-                              <IconButton
-                                  sx={{
-                                    p: 0,
-                                    mr: 1,
-                                    color: 'gray',
-                                    transition: 'color 0.3s',
-                                    '&:hover': {
-                                      color: 'blue',
-                                    },
-                                    '&:active': {
-                                      color: 'darkblue',
-                                    },
-                                  }}
-                                  onClick={handleLike}
-                              >
-                                <ThumbUpIcon sx={{ fontSize: "16px" }} />
-                              </IconButton>
-                              <Typography variant="body1" sx={{ opacity: 0.7, mr: 2 }}>
-                                  {videoDetail?.statistics.likes?.toLocaleString()}
-                              </Typography>
-                              <IconButton
-                                  sx={{
-                                    p: 0,
-                                    mr: 1,
-                                    color: 'gray',
-                                    transition: 'color 0.3s',
-                                    '&:hover': {
-                                      color: 'red',
-                                    },
-                                    '&:active': {
-                                      color: 'darkred',
-                                    },
-                                  }}
-                                  onClick={handleDislike}
-                              >
-                                <ThumbDownIcon sx={{ fontSize: "16px" }} />
-                              </IconButton>
-                              <Typography variant="body1" sx={{ opacity: 0.7 }}>
-                                  {videoDetail?.statistics.dislikes?.toLocaleString()}
-                              </Typography>
-                            </Box>
-                          </Stack>
+                            <Stack direction="row" gap="20px" alignItems="center">
+                                <Box
+                                    sx={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        border: '1px solid gray',
+                                        borderRadius: '50px',
+                                        padding: '5px 10px',
+                                        ml: "50px"
+                                    }}
+                                >
+                                    <IconButton
+                                        sx={{
+                                            p: 0,
+                                            mr: 1,
+                                            color: 'gray',
+                                            transition: 'color 0.3s',
+                                            '&:hover': {
+                                                color: 'blue',
+                                            },
+                                            '&:active': {
+                                                color: 'darkblue',
+                                            },
+                                        }}
+                                        onClick={handleLike}
+                                    >
+                                        <ThumbUpIcon sx={{fontSize: "16px"}}/>
+                                    </IconButton>
+                                    <Typography variant="body1" sx={{opacity: 0.7, mr: 2}}>
+                                        {videoDetail?.statistics.likes?.toLocaleString()}
+                                    </Typography>
+                                    <IconButton
+                                        sx={{
+                                            p: 0,
+                                            mr: 1,
+                                            color: 'gray',
+                                            transition: 'color 0.3s',
+                                            '&:hover': {
+                                                color: 'red',
+                                            },
+                                            '&:active': {
+                                                color: 'darkred',
+                                            },
+                                        }}
+                                        onClick={handleDislike}
+                                    >
+                                        <ThumbDownIcon sx={{fontSize: "16px"}}/>
+                                    </IconButton>
+                                    <Typography variant="body1" sx={{opacity: 0.7}}>
+                                        {videoDetail?.statistics.dislikes?.toLocaleString()}
+                                    </Typography>
+                                </Box>
+                            </Stack>
 
                         </Stack>
-                      <Box sx={{display: 'flex', justifyContent: 'space-between', px: 2, py: 1}}>
-                        <Box sx={{display: 'flex', alignItems: 'center'}}>
-                          <VisibilityIcon sx={{fontSize: "16px", color: "gray", mr: 1}}/>
-                          <Typography variant="body1" sx={{opacity: 0.7, color: '#fff'}}>
-                            {viewCount.toLocaleString()}
-                          </Typography>
+                        <Box sx={{display: 'flex', justifyContent: 'space-between', px: 2, py: 1}}>
+                            <Box sx={{display: 'flex', alignItems: 'center'}}>
+                                <VisibilityIcon sx={{fontSize: "16px", color: "gray", mr: 1}}/>
+                                <Typography variant="body1" sx={{opacity: 0.7, color: '#fff'}}>
+                                    {viewCount.toLocaleString()}
+                                </Typography>
+                            </Box>
+                            <Button variant="contained"
+                                    sx={{backgroundColor: 'gray', color: '#fff', borderRadius: '20px'}}>
+                                Подписаться
+                            </Button>
+                            <Button variant="contained"
+                                    sx={{backgroundColor: 'gray', color: '#fff', borderRadius: '20px'}}
+                                    onClick={handleShareClick}>
+                                <ShareIcon sx={{ml: 1, mr: 2}}/>
+                            </Button>
                         </Box>
-                        <Button variant="contained"
-                                sx={{backgroundColor: 'gray', color: '#fff', borderRadius: '20px'}}>
-                          Подписаться
-                        </Button>
-                        <Button variant="contained"
-                                sx={{backgroundColor: 'gray', color: '#fff', borderRadius: '20px'}}>
-                          <ShareIcon sx={{ml: 1, mr: 2}} />
-                        </Button>
-                      </Box>
                     </Box>
                 </Box>
                 {/*<Box px={2} py={{ md: 1, xs: 5 }} justifyContent="center" alignItems="center" >*/}

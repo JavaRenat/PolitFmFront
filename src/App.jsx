@@ -3,7 +3,7 @@ import {Box} from '@mui/material';
 import {useEffect} from "react";
 
 import {ChannelDetail, VideoDetail, SearchFeed, Navbar, Feed} from './components';
-
+import WebApp from "@twa-dev/sdk";
 
 const App = () => {
     return (
@@ -27,17 +27,21 @@ const FeedWithRedirect = () => {
 
     useEffect(() => {
 
-        const initData = window.Telegram?.WebApp?.initDataUnsafe;
+        const initData = WebApp.initDataUnsafe?.start_param;
 
         const queryParams = new URLSearchParams(location.search);
         let videoId = queryParams.get('video');
         let channelId = queryParams.get('channel');
 
 
-        // Если параметры не найдены, проверяем данные из Telegram API
         if (!videoId && !channelId && initData) {
-            videoId = initData.query_id === 'video' ? initData.query_hash : null;
-            channelId = initData.query_id === 'channel' ? initData.query_hash : null;
+            if (initData.startsWith('video')) {
+                const videoId = initData.replace('video', '');
+                navigate(`/video/${videoId}`);
+            } else if (initData.startsWith('channel')) {
+                const channelId = initData.replace('channel', '');
+                navigate(`/channel/${channelId}`);
+            }
         }
 
         if (videoId) {

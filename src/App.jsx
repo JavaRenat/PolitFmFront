@@ -1,22 +1,44 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Box } from '@mui/material';
+import {BrowserRouter, useNavigate, useLocation, Routes, Route} from "react-router-dom";
+import {Box} from '@mui/material';
+import {useEffect} from "react";
 
-import { ChannelDetail, VideoDetail, SearchFeed, Navbar, Feed } from './components';
+import {ChannelDetail, VideoDetail, SearchFeed, Navbar, Feed} from './components';
 
 
-const App = () => (
-    <BrowserRouter>
-        <Box sx={{ backgroundColor: '#000' }}>
-            <Navbar />
-            <Routes>
-                <Route path='/video/:id' element={<VideoDetail />} />
-                <Route path='/channel/:id' element={<ChannelDetail />} />
-                <Route path='/search/:searchTerm' element={<SearchFeed />} />
-                <Route path='*' element={<Feed />} />
-            </Routes>
-        </Box>
-    </BrowserRouter>
-);
+const App = () => {
+    return (
+        <BrowserRouter>
+            <Box sx={{backgroundColor: '#000'}}>
+                <Navbar/>
+                <Routes>
+                    <Route path='/video/:id' element={<VideoDetail/>}/>
+                    <Route path='/channel/:id' element={<ChannelDetail/>}/>
+                    <Route path='/search/:searchTerm' element={<SearchFeed/>}/>
+                    <Route path='*' element={<FeedWithRedirect/>}/>
+                </Routes>
+            </Box>
+        </BrowserRouter>
+    );
+};
+
+const FeedWithRedirect = () => {
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    useEffect(() => {
+        const queryParams = new URLSearchParams(location.search);
+        const videoId = queryParams.get('video');
+        const channelId = queryParams.get('channel');
+
+        if (videoId) {
+            navigate(`/video/${videoId}`);
+        } else if (channelId) {
+            navigate(`/channel/${channelId}`);
+        }
+    }, [location, navigate]);
+
+    return <Feed/>;
+};
 
 export default App;
 

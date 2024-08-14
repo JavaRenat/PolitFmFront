@@ -42,6 +42,7 @@ const FeedWithRedirect = () => {
                 const channelId = initData.replace('channel', '');
                 navigate(`/channel/${channelId}`);
             }
+            WebApp.initDataUnsafe.start_param = '';
         }
 
         if (videoId) {

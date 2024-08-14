@@ -87,20 +87,20 @@ const VideoDetail = () => {
     };
 
     const handleShareClick = async () => {
-        const videoUrlPolitFM = `${window.location.origin}?startapp=video${id}`; // Формируем ссылку на видео
+        const videoUrlPolitFM = `https://t.me/politfm_bot/politfm?startapp=video${id}`; // Формируем ссылку на видео
 
         try {
-            // // Попробуем использовать Web Share API, если он доступен
-            // if (navigator.share) {
-            //     await navigator.share({
-            //         title: 'Посмотрите это видео',
-            //         url: videoUrlPolitFM,
-            //     });
-            // } else {
-            // Если Web Share API недоступен, копируем ссылку в буфер обмена
-            await navigator.clipboard.writeText(videoUrlPolitFM);
-            alert('Ссылка скопирована в буфер обмена ' + videoUrlPolitFM);
-            // }
+            // Попробуем использовать Web Share API, если он доступен
+            if (navigator.share) {
+                await navigator.share({
+                    title: 'Посмотрите это видео',
+                    url: videoUrlPolitFM,
+                });
+            } else {
+                // Если Web Share API недоступен, копируем ссылку в буфер обмена
+                await navigator.clipboard.writeText(videoUrlPolitFM);
+                alert('Ссылка скопирована в буфер обмена: ' + videoUrlPolitFM);
+            }
         } catch (error) {
             console.error('Ошибка при шаринге или копировании:', error);
         }

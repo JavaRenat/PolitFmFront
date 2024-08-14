@@ -99,7 +99,7 @@ const VideoDetail = () => {
             } else {
                 // Если Web Share API недоступен, копируем ссылку в буфер обмена
                 await navigator.clipboard.writeText(videoUrlPolitFM);
-                alert('Ссылка скопирована в буфер обмена: ' + videoUrlPolitFM);
+                alert('Ссылка скопирована в буфер обмена');
             }
         } catch (error) {
             console.error('Ошибка при шаринге или копировании:', error);

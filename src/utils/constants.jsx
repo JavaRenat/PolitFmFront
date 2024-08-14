@@ -12,7 +12,7 @@ import OndemandVideoIcon from '@mui/icons-material/OndemandVideo';
 // import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 // import DeveloperModeIcon from '@mui/icons-material/DeveloperMode';
 
-export const logo = 'https://objectstore.fra1.civo.com/politfmfra/politfm/logo.png';
+export const logo = 'https://objectstore.fra1.civo.com/politfmfra/politfm/polit_logo.png';
 
 export const categories = [
   { viewname: 'Лучшее', name: 'Trend', icon: <OndemandVideoIcon />, },

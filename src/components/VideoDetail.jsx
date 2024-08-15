@@ -210,7 +210,7 @@ const VideoDetail = () => {
                             </Button>
                         </Box>
                         <Typography color="#fff" variant="body2" p={2}>
-                            {isDescriptionExpanded ? title + '\n' + description : title + '\n' + description.slice(0, 30) + '... '}
+                            {isDescriptionExpanded ? title + '\n' + description : (title + '\n' + description).slice(0, 30) + '... '}
                             <Button
                                 variant="text"
                                 sx={{color: '#03A9F4'}}

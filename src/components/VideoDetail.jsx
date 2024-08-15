@@ -12,6 +12,10 @@ import ThumbDownIcon from "@mui/icons-material/ThumbDown.js";
 import ShareIcon from '@mui/icons-material/Share';
 import WebApp from "@twa-dev/sdk";
 
+/*
+Эта компонента нужна для проигрывания видео
+ */
+
 const VideoDetail = () => {
     const [videoDetail, setVideoDetail] = useState(null);
     // const [videos, setVideos] = useState(null);
@@ -19,6 +23,7 @@ const VideoDetail = () => {
     const [user, setUser] = useState(null);
     const [authorId, setAuthorId] = useState(null);
     const [authorTelegramName, setAuthorTelegramName] = useState(null);
+    const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false); // состояние для управления отображением описания
 
 
     useEffect(() => {
@@ -34,7 +39,7 @@ const VideoDetail = () => {
 
     if (!videoDetail?.snippet) return <Typography variant="h5" color="error">...</Typography>; // Если данных нет, отображаем сообщение//<Loader/>;
 
-    const {snippet: {title, channelId, videoUrl}, statistics: {viewCount, likes, dislikes}} = videoDetail;
+    const {snippet: {title, channelId, videoUrl, description}, statistics: {viewCount, likes, dislikes}} = videoDetail;
 
     const handleLike = async () => {
         try {
@@ -106,6 +111,10 @@ const VideoDetail = () => {
         }
     };
 
+    const toggleDescription = () => {
+        setIsDescriptionExpanded(!isDescriptionExpanded); // Переключаем состояние
+    };
+
     return (
         <Box minHeight="95vh">
             <Stack direction={{xs: "column", md: "row"}}>
@@ -127,6 +136,7 @@ const VideoDetail = () => {
                                     <CheckCircleIcon sx={{fontSize: "12px", color: "gray", ml: "5px"}}/>
                                 </Typography>
                             </Link>
+
                             <Stack direction="row" gap="20px" alignItems="center">
                                 <Box
                                     sx={{
@@ -199,13 +209,20 @@ const VideoDetail = () => {
                                 <ShareIcon sx={{ml: 1, mr: 2}}/>
                             </Button>
                         </Box>
+                        <Typography color="#fff" variant="body2" p={2}>
+                            {isDescriptionExpanded ? title + '\n' + description : title + '\n' + description.slice(0, 30) + '... '}
+                            <Button
+                                variant="text"
+                                sx={{color: '#03A9F4'}}
+                                onClick={toggleDescription}
+                            >
+                                {isDescriptionExpanded ? 'Свернуть' : 'еще'}
+                            </Button>
+                        </Typography>
+                        <Box px={2} py={{md: 1, xs: 0}} justifyContent="center" alignItems="center">
+                            <Comments videoId={id}/>
+                        </Box>
                     </Box>
-                </Box>
-                {/*<Box px={2} py={{ md: 1, xs: 5 }} justifyContent="center" alignItems="center" >*/}
-                {/*  <Videos videos={videos} direction="column" />*/}
-                {/*</Box>*/}
-                <Box px={2} py={{md: 1, xs: 0}} justifyContent="center" alignItems="center">
-                    <Comments videoId={id}/> {/* Используем компоненту Comments */}
                 </Box>
             </Stack>
         </Box>

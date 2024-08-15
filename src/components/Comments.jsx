@@ -346,7 +346,7 @@ const Comments = ({videoId}) => {
     }
 
     return (
-        <Box sx={{backgroundColor: '#fff', borderRadius: '8px', p: 2, mt: 2, maxWidth: '600px'}}>
+        <Box sx={{backgroundColor: '#fff', borderRadius: '8px', p: 2, mt: 2}}>
             <Box display="flex" flexDirection="column" mb={2}>
                 <TextField
                     variant="outlined"
